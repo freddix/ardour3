@@ -1,0 +1,49 @@
+diff -aurN ardour-3.0.orig/libs/libltc/wscript ardour-3.0/libs/libltc/wscript
+--- ardour-3.0.orig/libs/libltc/wscript	2013-03-11 14:18:48.174982033 +0100
++++ ardour-3.0/libs/libltc/wscript	2013-03-11 14:34:28.385722280 +0100
+@@ -48,6 +48,7 @@
+     obj.vnum         = LIBLTC_LIB_VERSION
+     obj.install_path = os.path.join(bld.env['LIBDIR'], 'ardour3')
+     obj.defines     = ['PACKAGE="' + I18N_PACKAGE + '"']
++    obj.uselib       = 'M'
+ 
+ def shutdown():
+     autowaf.shutdown()
+diff -aurN ardour-3.0.orig/libs/rubberband/wscript ardour-3.0/libs/rubberband/wscript
+--- ardour-3.0.orig/libs/rubberband/wscript	2013-03-11 14:18:48.174982033 +0100
++++ ardour-3.0/libs/rubberband/wscript	2013-03-11 14:32:56.174383165 +0100
+@@ -39,7 +39,7 @@
+     obj.includes     = ['.', 'rubberband']
+     obj.name         = 'librubberband'
+     obj.target       = 'rubberband'
+-    obj.uselib       = 'FFTW3 FFTW3F SAMPLERATE SNDFILE'
++    obj.uselib       = 'FFTW3 FFTW3F SAMPLERATE SNDFILE PTHREAD'
+     obj.use          = 'libvamphost'
+     obj.vnum         = LIBRUBBERBAND_LIB_VERSION
+     obj.install_path = os.path.join(bld.env['LIBDIR'], 'ardour3')
+diff -aurN ardour-3.0.orig/libs/vamp-sdk/wscript ardour-3.0/libs/vamp-sdk/wscript
+--- ardour-3.0.orig/libs/vamp-sdk/wscript	2013-03-11 14:18:48.176982102 +0100
++++ ardour-3.0/libs/vamp-sdk/wscript	2013-03-11 14:33:36.703859420 +0100
+@@ -45,7 +45,7 @@
+     obj.includes     = ['.']
+     obj.name         = 'libvamphost'
+     obj.target       = 'vamphost'
+-    obj.uselib       = 'FFTW3 FFTW3F'
++    obj.uselib       = 'FFTW3 FFTW3F DL'
+     obj.vnum         = LIBVAMP_LIB_VERSION
+     obj.install_path = os.path.join(bld.env['LIBDIR'], 'ardour3')
+ 
+diff -aurN ardour-3.0.orig/wscript ardour-3.0/wscript
+--- ardour-3.0.orig/wscript	2013-03-11 14:18:48.163981645 +0100
++++ ardour-3.0/wscript	2013-03-11 14:56:23.426993399 +0100
+@@ -686,6 +686,10 @@
+     # Fix utterly braindead FLAC include path to not smash assert.h
+     conf.env['INCLUDES_FLAC'] = []
+ 
++    conf.env['LIB_PTHREAD'] = ['pthread']
++    conf.env['LIB_DL'] = ['dl']
++    conf.env['LIB_M'] = ['m']
++
+     config_text = open('libs/ardour/config_text.cc', "w")
+     config_text.write('''#include "ardour/ardour.h"
+ namespace ARDOUR {
