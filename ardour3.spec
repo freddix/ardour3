@@ -1,11 +1,16 @@
+# git describe --tags HEAD
+%define		gitrev	3.2-15-g77ac803
+
 Summary:	DAW and MIDI sequencer
 Name:		ardour3
-Version:	3.0
+Version:	3.2
 Release:	1
 License:	GPL v2
 Group:		Libraries
-Source0:	ardour-%{version}.tar.bz2
-# Source0-md5:	23297b15cb541e0b3c5c05a2fdd9bcca
+# git clone git://git.ardour.org/ardour/ardour.git
+# git archive --format=tar --prefix=ardour-3.2/ HEAD | xz -c > ardour-3.2.tar.xz
+Source0:	ardour-%{version}.tar.xz
+# Source0-md5:	7dcd3aa02bf89a58da80f58c82adcef8
 Patch0:		%{name}-libs.patch
 BuildRequires:	alsa-lib-devel
 BuildRequires:	aubio-devel
@@ -40,6 +45,11 @@ Digital Audio Workstation and MIDI sequencer.
 %patch0 -p1
 
 %{__sed} -i "s|debug_by_default=True|debug_by_default=False|" wscript
+
+cat > libs/ardour/revision.cc << EOF
+#include "ardour/revision.h"
+namespace ARDOUR { const char* revision = "%{gitrev}"; }
+EOF
 
 %build
 export CC="%{__cc}"
@@ -76,7 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ardour3/panners
 %dir %{_libdir}/ardour3/surfaces
 %dir %{_libdir}/ardour3/vamp
-%attr(755,root,root) %{_libdir}/ardour3/ardour-3.0
+%attr(755,root,root) %{_libdir}/ardour3/ardour-3.2
 %attr(755,root,root) %{_libdir}/ardour3/sanityCheck
 %attr(755,root,root) %{_libdir}/ardour3/lib*.so*
 %attr(755,root,root) %{_libdir}/ardour3/*/lib*.so*
