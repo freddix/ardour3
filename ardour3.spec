@@ -4,7 +4,7 @@
 Summary:	DAW and MIDI sequencer
 Name:		ardour3
 Version:	3.4
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries
 # git clone git://git.ardour.org/ardour/ardour.git
@@ -82,6 +82,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 %attr(755,root,root) %{_bindir}/ardour3
 %dir %{_libdir}/ardour3
+%dir %{_libdir}/ardour3/backends
 %dir %{_libdir}/ardour3/engines
 %dir %{_libdir}/ardour3/panners
 %dir %{_libdir}/ardour3/surfaces
