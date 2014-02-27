@@ -1,17 +1,18 @@
 # git describe --tags HEAD
-%define		gitrev	3.2-15-g77ac803
+%define		gitrev	3.5.357
 
 Summary:	DAW and MIDI sequencer
 Name:		ardour3
-Version:	3.4
-Release:	2
+Version:	3.5.357
+Release:	1
 License:	GPL v2
 Group:		Libraries
 # git clone git://git.ardour.org/ardour/ardour.git
 # git archive --format=tar --prefix=ardour-3.2/ HEAD | xz -c > ardour-3.2.tar.xz
 Source0:	ardour-%{version}.tar.xz
-# Source0-md5:	b35130eb8814027276884a0d0245941c
+# Source0-md5:	8cc62ed2ea7fb3c5a66b5078c69d1faf
 Patch0:		%{name}-libs.patch
+Patch1:		%{name}-wscript.patch
 BuildRequires:	alsa-lib-devel
 BuildRequires:	aubio-devel
 BuildRequires:	aubio-devel
@@ -43,12 +44,13 @@ Digital Audio Workstation and MIDI sequencer.
 %prep
 %setup -qn ardour-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %{__sed} -i "s|debug_by_default=True|debug_by_default=False|" wscript
 
 cat > libs/ardour/revision.cc << EOF
 #include "ardour/revision.h"
-namespace ARDOUR { const char* revision = "%{gitrev}"; }
+namespace ARDOUR { const char* revision = "%{version}"; }
 EOF
 
 %build
@@ -92,4 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ardour3/lib*.so*
 %attr(755,root,root) %{_libdir}/ardour3/*/lib*.so*
 %{_datadir}/ardour3
+
+%dir %{_libdir}/lv2/reasonablesynth.lv2
+%attr(755,root,root) %{_libdir}/lv2/reasonablesynth.lv2/reasonablesynth.so
+%{_libdir}/lv2/reasonablesynth.lv2/manifest.ttl
+%{_libdir}/lv2/reasonablesynth.lv2/reasonablesynth.ttl
 
