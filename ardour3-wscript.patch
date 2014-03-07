@@ -1,0 +1,36 @@
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Forwarded: Not-Needed
+Last-Update: 2013-11-07
+Description: Always rely on the version from debian changelog
+ We generate libs/ardour/revision.cc from debian/rules.
+ Adapt the wscript to parse our custom format. To avoid
+ confusion with any existing .git directory on a packager's
+ machine, disable the git version check and pretend it's a
+ tarball.
+
+--- a/wscript
++++ b/wscript
+@@ -22,10 +22,7 @@
+         remove_punctuation_map = dict((ord(char), None) for char in '";')
+         return content[1].decode('utf-8').strip().split(' ')[7].translate (remove_punctuation_map)
+ 
+-if os.path.isdir (os.path.join(os.getcwd(), '.git')):
+-    rev = fetch_git_revision ()
+-else:
+-    rev = fetch_tarball_revision ()
++rev = fetch_tarball_revision ()
+ 
+ #
+ # rev is now of the form MAJOR.MINOR-rev-commit
+@@ -33,9 +30,8 @@
+ 
+ parts = rev.split ('.')
+ MAJOR = parts[0]
+-other = parts[1].split ('-')
+-MINOR = other[0]
+-MICRO = other[1]
++MINOR = parts[1]
++MICRO = parts[2]
+ 
+ V = MAJOR + '.' + MINOR + '.' + MICRO
+ #
